@@ -25,6 +25,8 @@ O objetivo é criar um ambiente prático para desenvolvimento de habilidades em:
 
 # 🏗️ Arquitetura Atual
 
+![BobHub Topology](diagrams/bobhub-topology-v1.png)
+
 ## HQ (Datacenter)
 
 Servidor VPS Linux responsável por centralizar serviços, monitoramento e conectividade entre as filiais.
