@@ -1,0 +1,14 @@
+[Interface]
+Address = 10.255.255.1/24
+ListenPort = 51820
+PrivateKey = <REDACTED>
+
+[Peer]
+# Site A
+PublicKey = <SITE_A_PUBLIC_KEY>
+AllowedIPs = 10.255.255.2/32, 10.10.40.0/24
+
+[Peer]
+# Site B
+PublicKey = <SITE_B_PUBLIC_KEY>
+AllowedIPs = 10.255.255.3/32, 10.20.40.0/24
