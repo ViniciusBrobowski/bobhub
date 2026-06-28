@@ -182,7 +182,7 @@ This allows the containerized Node Exporter to collect metrics from the real VPS
 
 # Phase 6 — Release v1.0-observability
 
-Status: 🚧 In Progress
+Status: ✅ Completed
 
 ## Goals
 
