@@ -20,7 +20,8 @@ services:
       - "9090:9090"
 
     volumes:
-      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+      - ../prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - ../prometheus/alert.rules.yml:/etc/prometheus/alert.rules.yml:ro
       - prometheus-data:/prometheus
 
     depends_on:
@@ -36,7 +37,7 @@ services:
       - '--collector.filesystem.mount-points-exclude=^/(sys|proc|dev|host|etc)($|/)'
 
     volumes:
-      - /:/host:ro,rslave'
+      - /:/host:ro,rslave
 
     ports:
       - "9100:9100"
