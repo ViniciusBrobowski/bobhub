@@ -1,0 +1,50 @@
+groups:
+  - name: bobhub-alerts
+
+    rules:
+
+    - alert: PrometheusTargetDown
+      expr: up == 0
+      for: 1m
+      labels:
+        severity: critical
+      annotations:
+        summary: "Target unavailable"
+        description: "{{ $labels.instance }} has been unreachable for more than 1 minute."
+
+    - alert: HighCPUUsage
+      expr: (100 - (avg by(instance)(rate(node_cpu_seconds_total{mode="idle"}[5m])) * 100)) > 80
+      for: 5m
+      labels:
+        severity: warning
+      annotations:
+        summary: "High CPU usage"
+        description: "CPU usage is above 80% on {{ $labels.instance }}."
+
+    - alert: HighMemoryUsage
+      expr: ((1 - (node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes)) * 100) > 85
+      for: 5m
+      labels:
+        severity: warning
+      annotations:
+        summary: "High Memory usage"
+        description: "Memory usage is above 85% on {{ $labels.instance }}." 
+
+    - alert: LowDiskSpace
+      expr: (
+        node_filesystem_avail_bytes{fstype!~"tmpfs|overlay"} / node_filesystem_size_bytes{fstype!~"tmpfs|overlay"}) * 100 < 10
+      for: 5m
+      labels: 
+        severity: warning
+      annotations:
+        summary: "Low Disk Space"
+        description: "Disk space is below 10% on {{ $labels.instance }}."
+
+    - alert: NodeExporterDown
+      expr: up{job="node-exporter"} == 0
+      for: 1m
+      labels:
+        severity: critical
+      annotations:
+        summary: "Node Exporter down"
+        description: "Node Exporter is down on {{ $labels.instance }}."
