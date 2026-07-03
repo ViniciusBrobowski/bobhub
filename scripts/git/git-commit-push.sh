@@ -11,7 +11,7 @@ if [ -z "$1" ]; then
 fi
 
 COMMIT_MESSAGE="$1"
-INSSUE_INPUT="$2"
+ISSUE_INPUT="$2"
 
 cd "$(git rev-parse --show-toplevel)"
 
@@ -25,7 +25,7 @@ normalize_issue_number() {
 
     input="${input#\#}"
 
-    if [[ "$input" =~ ^[0-9]+$ ]]; then
+    if ! [[ "$input" =~ ^[0-9]+$ ]]; then
         echo "ERROR"
         return
     fi
