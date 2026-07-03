@@ -6,7 +6,7 @@ if [ -z "$1" ]; then
     echo "Uso:"
     echo "  $0 \"Mensagem do commit\""
     echo "  $0 \"Mensagem do commit\" 3"
-    echo '  '"$0"' \"Mensagem do commit" #3'
+    echo '  '"$0"' \"Mensagem do commit\" "#3"'
     exit 1
 fi
 
@@ -33,9 +33,9 @@ normalize_issue_number() {
     echo "$input"
 }
 
-ISSUE_NUMBER=$(normalize_issue_number "$INSSUE_INPUT")
+ISSUE_NUMBER=$(normalize_issue_number "$ISSUE_INPUT")
 
-if [ "ISSUE_NUMBER" = "ERROR" ]; then
+if [ "$ISSUE_NUMBER" = "ERROR" ]; then
     echo "Erro: Número da issue inválido"
     echo "Use apenas o número, exemplo: 3"
     echo "Ou entre aspas com #: \"#3\""
