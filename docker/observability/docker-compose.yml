@@ -27,6 +27,24 @@ services:
     depends_on:
       - node-exporter
 
+  alertmanager: 
+    image: prom/alertmanager:latest
+    container_name: alertmanager
+    restart: unless-stopped
+
+    ports:
+      - "9093:9093"
+
+    volumes:
+      - ../alertmanager/alertmanager.yml:/etc/alertmanager/alertmanager.yml:ro
+      - alertmanager-data:/alertmanager
+
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "--quiet", "http://localhost:9093/-/healthy"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
   node-exporter:
     image: prom/node-exporter:latest
     container_name: node-exporter
@@ -45,3 +63,4 @@ services:
 volumes:
   grafana-data:
   prometheus-data:
+  alertmanager-data:
