@@ -1,0 +1,35 @@
+issues:
+  - title: "Create GitHub issue script"
+    body: |
+      Create a script to import GitHub issues foram a YAML backlog file.
+
+      Goals:
+      - Read issue definitions from templates/issues.yaml
+      - Create issues using GitHub CLI
+      - Support for issue title, body and labels
+      - Avoid manual issue creation
+
+      Evidence:
+      - Script available in scripts/github/import-issues.sh
+      - Example backlog available in templates/issues.yaml
+      - Usage documented in README or docs
+    labels:
+      - bobhub
+      - automation
+      - github
+      - devops
+
+  - title: "Create BobHub inventory documentation"
+    body: |
+      Document the current BobHub environment inventory.
+
+      Include:
+      - Host information
+      - Docker services
+      - Published ports
+      - Observability stack
+      - Network information
+    labels:
+      - bobhub
+      - documentation
+      - infrastructure
