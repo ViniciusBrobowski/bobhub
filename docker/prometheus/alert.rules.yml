@@ -1,0 +1,12 @@
+groups:
+  - name: bobhub-basic-alerts
+    rules:
+      - alert: BobHubNodeExporterDown
+        expr: up{job="node-exporter"} == 0
+        for: 1m
+        labels:
+          severity: warning
+          project: bobhub
+        annotations:
+          summary: "Node Exporter is down"
+          description: "Prometheus could not scrape Node Exporter for more than 1 minute."

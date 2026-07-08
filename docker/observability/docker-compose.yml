@@ -21,11 +21,12 @@ services:
 
     volumes:
       - ../prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
-      - ../prometheus/alert.rules.yml:/etc/prometheus/alerts:ro
+      - ../prometheus/alert.rules.yml:/etc/prometheus/alert.rules.yml:ro
       - prometheus-data:/prometheus
 
     depends_on:
       - node-exporter
+      - alertmanager
 
   alertmanager: 
     image: prom/alertmanager:latest
