@@ -1,0 +1,154 @@
+issues:
+  - title: "Build BobHub inventory generator"
+    body: |
+      Create a script that automatically generates an infrastructure inventory for the BobHub environment.
+
+      Context:
+      BobHub already has a working observability stack with Prometheus, Grafana, Node Exporter, Alertmanager and Discord notifications. The next step is to document the current environment automatically.
+
+      Tasks:
+      - Create an inventory script under scripts/inventory/
+      - Collect hostname and operating system information
+      - Collect kernel, CPU, memory and disk information
+      - Collect Docker version and Docker Compose version
+      - List running containers
+      - List published ports
+      - List Docker networks
+      - Generate docs/inventory.md
+
+      Acceptance Criteria:
+      - Inventory script exists
+      - Script can be executed manually
+      - docs/inventory.md is generated automatically
+      - Docker containers and ports are included
+      - Output is readable and useful as project evidence
+
+      Dependencies:
+      - Docker installed
+      - BobHub observability stack running
+    labels:
+      - bobhub
+      - automation
+      - infrastructure
+      - documentation
+
+  - title: "Add inventory command to BobHub CLI"
+    body: |
+      Add an inventory command to the BobHub CLI.
+
+      Context:
+      After creating the inventory generator, the next step is to expose it through the BobHub CLI so the project can use a standard command interface.
+
+      Tasks:
+      - Add an inventory command to the BobHub CLI
+      - Make the command call the inventory generator script
+      - Validate required dependencies
+      - Show a success message after execution
+      - Print the generated file path
+
+      Acceptance Criteria:
+      - BobHub CLI has an inventory command
+      - Command executes the inventory generator
+      - User receives clear feedback
+      - docs/inventory.md is generated or updated
+      - CLI documentation is updated
+
+      Dependencies:
+      - Build BobHub inventory generator
+    labels:
+      - bobhub
+      - automation
+      - infrastructure
+      - documentation
+
+  - title: "Create BobHub infrastructure report"
+    body: |
+      Create a technical infrastructure report based on the current BobHub environment.
+
+      Context:
+      The inventory provides raw environment data. The infrastructure report should summarize the current state of the environment in a more readable and decision-oriented format.
+
+      Tasks:
+      - Create docs/reports/infrastructure-report.md
+      - Summarize the current observability stack
+      - Include container status
+      - Include exposed services and ports
+      - Include alerting status
+      - Include known limitations and next improvements
+
+      Acceptance Criteria:
+      - Infrastructure report exists
+      - Report explains the current environment clearly
+      - Observability and alerting stack are documented
+      - Report can be used as technical evidence
+      - Known limitations are listed
+
+      Dependencies:
+      - Build BobHub inventory generator
+    labels:
+      - bobhub
+      - infrastructure
+      - documentation
+
+  - title: "Document observability runbook"
+    body: |
+      Create an operational runbook for the BobHub observability stack.
+
+      Context:
+      BobHub now has Prometheus, Grafana, Node Exporter, Alertmanager and Discord notifications. A runbook is needed to document how to operate and troubleshoot this stack.
+
+      Tasks:
+      - Create docs/runbooks/observability-runbook.md
+      - Document how to start the stack
+      - Document how to stop the stack
+      - Document how to validate Prometheus
+      - Document how to validate Alertmanager
+      - Document how to test Discord alerts
+      - Document common troubleshooting scenarios
+
+      Acceptance Criteria:
+      - Observability runbook exists
+      - Start and stop procedures are documented
+      - Health validation commands are included
+      - Alert test procedure is included
+      - Troubleshooting section is included
+
+      Dependencies:
+      - Configure Discord alert notifications
+    labels:
+      - bobhub
+      - observability
+      - documentation
+
+  - title: "Create GitHub release helper"
+    body: |
+      Create a helper script to generate GitHub releases for BobHub.
+
+      Context:
+      BobHub already has Git helpers, issue automation and completed checkpoints. A release helper will make it easier to create versioned project milestones.
+
+      Tasks:
+      - Create scripts/git/create-release.sh
+      - Validate GitHub CLI authentication
+      - Validate that the working tree is clean
+      - Accept a version argument
+      - Create a Git tag
+      - Generate basic release notes from recent commits
+      - Create a GitHub release using gh CLI
+      - Document usage
+
+      Acceptance Criteria:
+      - Release helper script exists
+      - Script validates required inputs
+      - Script creates a GitHub release
+      - Release notes are generated
+      - Usage is documented
+
+      Dependencies:
+      - GitHub CLI authenticated
+      - Existing BobHub Git helper workflow
+    labels:
+      - bobhub
+      - automation
+      - github
+      - devops
