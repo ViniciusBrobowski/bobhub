@@ -38,6 +38,7 @@ services:
 
     volumes:
       - ../alertmanager/alertmanager.yml:/etc/alertmanager/alertmanager.yml:ro
+      - ../alertmanager/discord-webhook.url:/etc/alertmanager/discord-webhook.url:ro
       - alertmanager-data:/alertmanager
 
     healthcheck:

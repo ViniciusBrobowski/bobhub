@@ -2,7 +2,28 @@ global:
   resolve_timeout: 5m
 
 route:
-  receiver: default
+  receiver: discord
+  group_by:
+    - alertname
+    - job
+    - severity
+  group_wait: 10s
+  group_interval: 1m
+  repeat_interval: 1h
 
 receivers:
-  - name: default
+  - name: discord
+    discord_configs:
+      - webhook_url_file: /etc/alertmanager/discord-webhook.url
+        send_resolved: true
+        username: BobHub Alertmanager
+        title: '{{ if eq .Status "firing" }}BobHub Alert Firing{{ else }}BobHub Alert Resolved{{ end }}'
+        message: |
+          {{ range .Alerts }}
+          **Alert:** {{ index .Labels "alertname" }}
+          **Severity:** {{ index .Labels "severity" }}
+          **Job:** {{ index .Labels "job" }}
+          **Instance:** {{ index .Labels "instance" }}
+          **Summary:** {{ index .Annotations "summary" }}
+          **Description:** {{ index .Annotations "description" }}
+          {{ end }}
