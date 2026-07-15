@@ -145,6 +145,38 @@ health_menu() {
     done
 }
 
+inventory_menu() {
+    while true; do
+        header
+        echo "Inventory"
+        echo
+        echo "1) Generate infrastructure inventory"
+        echo "2) Show generated inventory path"
+        echo "0) Back"
+        echo 
+        read -rp "Choice: " choice
+
+        case "$choice" in
+            1)
+                ./scripts/inventory/generate-inventory.sh
+                pause
+                ;;
+            2)
+                echo "Inventory file:"
+                echo "$REPO_ROOT/docs/inventory.md"
+                pause
+                ;;
+            0)
+                break
+                ;;
+            *)
+                echo "Invalid option."
+                pause
+                ;;
+        esac
+    done    
+}
+
 main_menu() {
     while true; do
         header
@@ -153,6 +185,7 @@ main_menu() {
         echo "1) Git"
         echo "2) Observability"
         echo "3) Health"
+        echo "4) Inventory"
         echo "0) Exit"
         echo
         read -rp "Choice: " choice
@@ -166,6 +199,9 @@ main_menu() {
                 ;;
             3)
                 health_menu
+                ;;
+            4)
+                inventory_menu
                 ;;
             0)
                 echo "Bye."

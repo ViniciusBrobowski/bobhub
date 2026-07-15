@@ -4,7 +4,7 @@
 
 The BobHub CLI is a command-line interface used to operate common tasks in the BobHub lab.
 
-It centralizes scripts related to Git, Observability and Health checks, making day-to-day operations easier and more consistent.
+It centralizes scripts related to Git, Observability, Health checks and Inventory generation, making day-to-day operations easier and more consistent.
 
 The CLI is not intended to replace the individual scripts. Instead, it acts as a single entrypoint to access them through menus.
 
@@ -36,10 +36,12 @@ Example:
 
 The initial version of the CLI includes the following menus:
 
+```md
 ```text
 1) Git
 2) Observability
 3) Health
+4) Inventory
 0) Exit
 ```
 
@@ -135,6 +137,58 @@ The goal is to quickly check whether the monitoring stack is healthy and whether
 
 ---
 
+## Inventory Menu
+
+The Inventory menu provides options to generate and locate the BobHub infrastructure inventory.
+
+Available options:
+
+```text
+1) Generate infrastructure inventory
+2) Show generated inventory path
+0) Back
+```
+
+### Generate infrastructure inventory
+
+This option executes the inventory generator script:
+
+```text
+scripts/inventory/generate-inventory.sh
+```
+
+The script collects information about the current BobHub environment, including:
+
+- Hostname
+- Operating system
+- Kernel
+- CPU
+- Memory
+- Disk usage
+- Network information
+- Docker version
+- Docker Compose version
+- Running containers
+- Docker networks
+- Docker volumes
+- Observability endpoints
+
+Generated file:
+
+```text
+docs/inventory.md
+```
+
+### Show generated inventory path
+
+This option prints the expected inventory file path:
+
+```text
+docs/inventory.md
+```
+
+---
+
 ## Related Scripts
 
 Current operational scripts used by the CLI:
@@ -143,6 +197,9 @@ Current operational scripts used by the CLI:
 scripts/
 ├── git/
 │   └── git-commit-push.sh
+|
+├── inventory/
+│   └── generate-inventory.sh
 │
 └── observability/
     ├── health-check.sh
