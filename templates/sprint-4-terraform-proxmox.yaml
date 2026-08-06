@@ -1,0 +1,222 @@
+issues:
+  - title: "Define Terraform and Proxmox scope"
+    labels:
+      - terraform
+      - proxmox
+      - documentation
+      - devops
+    body: |
+      ## Objective
+
+      Define the scope for BobHub v0.2.0 focused on Terraform and Proxmox.
+
+      ## Tasks
+
+      - Document the purpose of the Terraform + Proxmox track
+      - Define what is in scope
+      - Define what is out of scope
+      - Define expected deliverables
+      - Define success criteria
+
+      ## Acceptance Criteria
+
+      - Scope is documented
+      - v0.2.0 objective is clear
+      - Future tracks are not mixed into this version
+
+  - title: "Document Proxmox lab architecture"
+    labels:
+      - proxmox
+      - documentation
+      - infrastructure
+    body: |
+      ## Objective
+
+      Document the expected Proxmox lab architecture for BobHub.
+
+      ## Tasks
+
+      - Document the Proxmox role in the BobHub project
+      - Define expected VM standard
+      - Document CPU, memory, disk and network assumptions
+      - Document access model
+      - Avoid exposing sensitive infrastructure details
+
+      ## Acceptance Criteria
+
+      - Proxmox architecture document exists
+      - VM standard is documented
+      - Sensitive details are not exposed
+
+  - title: "Create Terraform project structure"
+    labels:
+      - terraform
+      - automation
+      - infrastructure
+    body: |
+      ## Objective
+
+      Create the initial Terraform project structure for Proxmox provisioning.
+
+      ## Expected Structure
+
+      terraform/proxmox/
+      ├── main.tf
+      ├── variables.tf
+      ├── outputs.tf
+      ├── providers.tf
+      ├── terraform.tfvars.example
+      └── README.md
+
+      ## Acceptance Criteria
+
+      - Terraform folder structure exists
+      - Base files are created
+      - README explains the purpose of the folder
+
+  - title: "Configure Terraform Proxmox provider baseline"
+    labels:
+      - terraform
+      - proxmox
+      - automation
+    body: |
+      ## Objective
+
+      Create the initial Terraform provider configuration for Proxmox.
+
+      ## Tasks
+
+      - Define required provider block
+      - Configure provider variables
+      - Avoid hardcoded credentials
+      - Use variables for Proxmox endpoint and credentials
+      - Document authentication approach
+
+      ## Acceptance Criteria
+
+      - Provider configuration exists
+      - Credentials are not hardcoded
+      - Sensitive values are not committed
+
+  - title: "Create VM variables and tfvars example"
+    labels:
+      - terraform
+      - infrastructure
+      - documentation
+    body: |
+      ## Objective
+
+      Define Terraform variables for BobHub VM provisioning.
+
+      ## Tasks
+
+      - Create variables for VM name
+      - Create variables for CPU, memory and disk
+      - Create variables for Proxmox node and storage
+      - Create variables for network bridge
+      - Create terraform.tfvars.example with safe placeholder values
+
+      ## Acceptance Criteria
+
+      - variables.tf exists
+      - terraform.tfvars.example exists
+      - Real environment values are not committed
+
+  - title: "Create BobHub VM resource definition"
+    labels:
+      - terraform
+      - proxmox
+      - infrastructure
+    body: |
+      ## Objective
+
+      Create the first Terraform VM resource definition for BobHub.
+
+      ## Tasks
+
+      - Define VM resource
+      - Use variables instead of hardcoded values
+      - Configure CPU, memory, disk and network
+      - Prepare the resource for Ubuntu Server VM provisioning
+      - Document any manual prerequisites
+
+      ## Acceptance Criteria
+
+      - VM resource definition exists
+      - Configuration uses variables
+      - Manual prerequisites are documented
+
+  - title: "Document Terraform state strategy"
+    labels:
+      - terraform
+      - documentation
+      - security
+    body: |
+      ## Objective
+
+      Document how Terraform state will be handled in BobHub v0.2.0.
+
+      ## Tasks
+
+      - Explain local state usage
+      - Document ignored state files
+      - Update .gitignore if needed
+      - Document future remote backend possibility
+      - Explain why state must not be committed
+
+      ## Acceptance Criteria
+
+      - Terraform state strategy is documented
+      - .gitignore protects state files
+      - Security risks are documented
+
+  - title: "Create Terraform runbook"
+    labels:
+      - terraform
+      - documentation
+      - devops
+    body: |
+      ## Objective
+
+      Create an operational runbook for using Terraform in the BobHub Proxmox lab.
+
+      ## Tasks
+
+      - Document terraform init
+      - Document terraform validate
+      - Document terraform plan
+      - Document terraform apply
+      - Document terraform destroy
+      - Document troubleshooting steps
+
+      ## Acceptance Criteria
+
+      - Terraform runbook exists
+      - Basic Terraform workflow is documented
+      - Safety notes are included
+
+  - title: "Provision first BobHub VM using Terraform"
+    labels:
+      - terraform
+      - proxmox
+      - infrastructure
+      - testing
+    body: |
+      ## Objective
+
+      Validate the Terraform + Proxmox workflow by provisioning the first BobHub VM.
+
+      ## Tasks
+
+      - Run terraform init
+      - Run terraform validate
+      - Run terraform plan
+      - Review the planned changes
+      - Provision the VM if safe
+      - Document results and issues found
+
+      ## Acceptance Criteria
+
+      - Terraform workflow is validated
+      - VM provisioning is tested or blocker is documented
+      - Evidence is documented without exposing sensitive details

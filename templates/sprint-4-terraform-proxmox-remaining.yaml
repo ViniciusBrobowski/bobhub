@@ -1,0 +1,75 @@
+issues:
+  - title: "Document Terraform state strategy"
+    labels:
+      - terraform
+      - documentation
+      - security
+    body: |
+      ## Objective
+
+      Document how Terraform state will be handled in BobHub v0.2.0.
+
+      ## Tasks
+
+      - Explain local state usage
+      - Document ignored state files
+      - Update .gitignore if needed
+      - Document future remote backend possibility
+      - Explain why state must not be committed
+
+      ## Acceptance Criteria
+
+      - Terraform state strategy is documented
+      - .gitignore protects state files
+      - Security risks are documented
+
+  - title: "Create Terraform runbook"
+    labels:
+      - terraform
+      - documentation
+      - devops
+    body: |
+      ## Objective
+
+      Create an operational runbook for using Terraform in the BobHub Proxmox lab.
+
+      ## Tasks
+
+      - Document terraform init
+      - Document terraform validate
+      - Document terraform plan
+      - Document terraform apply
+      - Document terraform destroy
+      - Document troubleshooting steps
+
+      ## Acceptance Criteria
+
+      - Terraform runbook exists
+      - Basic Terraform workflow is documented
+      - Safety notes are included
+
+  - title: "Provision first BobHub VM using Terraform"
+    labels:
+      - terraform
+      - proxmox
+      - infrastructure
+      - testing
+    body: |
+      ## Objective
+
+      Validate the Terraform + Proxmox workflow by provisioning the first BobHub VM.
+
+      ## Tasks
+
+      - Run terraform init
+      - Run terraform validate
+      - Run terraform plan
+      - Review the planned changes
+      - Provision the VM if safe
+      - Document results and issues found
+
+      ## Acceptance Criteria
+
+      - Terraform workflow is validated
+      - VM provisioning is tested or blocker is documented
+      - Evidence is documented without exposing sensitive details
