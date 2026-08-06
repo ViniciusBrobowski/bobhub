@@ -539,7 +539,7 @@ scripts/observability/health-check.sh
 ## Related Documentation
 
 ```text
-docs/monitoring.md
+docs/operations/monitoring.md
 docs/infrastructure-report.md
 docs/bobhub-cli.md
 ```

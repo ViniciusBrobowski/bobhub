@@ -56,7 +56,7 @@ GitHub Project
 The Planner Agent should use the following project files as context:
 
 - `README.md`
-- `docs/devops-drd-roadmap.md`
+- `docs/planning/devops-drd-roadmap.md`
 - `docs/bobhub-cli.md`
 - `templates/issues.yaml`
 - Existing GitHub Issues

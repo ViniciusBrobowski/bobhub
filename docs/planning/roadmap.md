@@ -77,8 +77,8 @@ Status: ✅ Completed
 * README.md
 * docs/architecture.md
 * docs/network.md
-* docs/monitoring.md
-* docs/roadmap.md
+* docs/operations/monitoring.md
+* docs/planning/roadmap.md
 * Organized repository structure
 * GitHub repository connected
 * Initial documentation versioned
