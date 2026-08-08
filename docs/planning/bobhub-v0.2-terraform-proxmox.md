@@ -47,6 +47,23 @@ This version includes:
 
 ---
 
+## Expected Deliverables
+
+BobHub v0.2.0 is expected to deliver:
+
+- Documented Proxmox lab architecture
+- Terraform project structure under `terraform/proxmox/`
+- Baseline Proxmox provider configuration
+- Reusable VM variables
+- Sanitized `terraform.tfvars.example`
+- Terraform definition for a BobHub lab VM
+- Documented Terraform state strategy
+- Terraform operational runbook
+- Validation of the first VM provisioning workflow
+- Git ignore rules protecting state files, credentials and environment-specific configuration
+
+---
+
 ## Out of Scope
 
 This version does not include:
