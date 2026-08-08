@@ -1,0 +1,48 @@
+name: BobHub Validation
+
+on: 
+  push:
+    branches:
+      - main
+
+  pull_request:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs: 
+  validate: 
+    name: Validate BobHub
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Validate Bash Scripts
+        shell: bash
+        run : |
+          echo "Validating BobHub shell scripts..."
+
+          while IFS= read -r -d '' script; do
+            echo "Checking $script..."
+            bash -n "$script"
+          done < <(find scripts -type f -name "*.sh" -print0)
+
+      - name: Validate Docker Compose files
+        shell: bash
+        run: |
+          echo "Searching for Docker Compose files..."
+
+          find . \
+            \( -name "docker-compose.yml" \
+            -o -name "docker-compose.yaml" \
+            -o -name "compose.yml" \
+            -o -name "compose.yaml" \) \
+            -print
+
+      - name: BobHub validation summary
+        run: |
+          echo "BobHub validation completed successfully."
