@@ -1,6 +1,6 @@
-name: BobHub Validation
+name: BobHub CI
 
-on: 
+on:
   push:
     branches:
       - main
@@ -12,8 +12,8 @@ on:
 permissions:
   contents: read
 
-jobs: 
-  validate: 
+jobs:
+  validate:
     name: Validate BobHub
     runs-on: ubuntu-latest
 
@@ -21,9 +21,9 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v6
 
-      - name: Validate Bash Scripts
+      - name: Validate Bash scripts
         shell: bash
-        run : |
+        run: |
           echo "Validating BobHub shell scripts..."
 
           while IFS= read -r -d '' script; do
@@ -46,3 +46,45 @@ jobs:
       - name: BobHub validation summary
         run: |
           echo "BobHub validation completed successfully."
+
+  finalize:
+    name: Finalize linked issue
+    needs: validate
+
+    if: github.event_name == 'push' && needs.validate.result == 'success'
+
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      issues: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Close linked issue
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+
+        run: |
+          COMMIT_MESSAGE="$(git log -1 --pretty=%B)"
+
+          ISSUE_NUMBER="$(
+            printf '%s\n' "$COMMIT_MESSAGE" |
+            sed -nE 's/^[[:space:]]*Issue:[[:space:]]*#([0-9]+)[[:space:]]*$/\1/p' |
+            head -n 1
+          )"
+
+          if [ -z "$ISSUE_NUMBER" ]; then
+            echo "No linked issue found in commit message."
+            exit 0
+          fi
+
+          echo "Linked issue found: #$ISSUE_NUMBER"
+
+          gh issue close "$ISSUE_NUMBER" \
+            --repo "$GITHUB_REPOSITORY" \
+            --reason completed \
+            --comment "Closed automatically after BobHub CI completed successfully for commit $GITHUB_SHA."
