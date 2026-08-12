@@ -10,7 +10,7 @@ variable "proxmox_api_token" {
 }
 
 variable "proxmox_insecure" {
-  description = "Disable TLS certificate verification for Plab environments"
+  description = "Disable TLS certificate verification for lab environments"
   type        = bool
   default     = false
 }
