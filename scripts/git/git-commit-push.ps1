@@ -2,7 +2,7 @@ param(
     [Parameter(Mandatory = $true)]
     [string]$Message,
 
-    [Parameter(Mandatory = $false)]
+    [Parameter(Mandatory = $true)]
     [string]$Issue
 )
 
@@ -65,9 +65,13 @@ Stop-OnError "Unable to create commit."
 Write-Host ""
 Write-Host "[3/3] Pushing to GitHub..."
 
-$upstream = git rev-parse --abbrev-ref --symbolic-full-name "@{u}" 2>$null
+$upstream = git for-each-ref `
+    --format="%(upstream:short)" `
+    "refs/heads/$branch"
 
-if ($LASTEXITCODE -ne 0 -or -not $upstream) {
+Stop-OnError "Unable to determine branch upstream."
+
+if ([string]::IsNullOrWhiteSpace($upstream)) {
 
     Write-Host "No upstream configured."
     Write-Host "Publishing branch $branch..."

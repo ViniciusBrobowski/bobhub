@@ -110,9 +110,10 @@ if ($localBranch) {
     throw "Local branch '$branchName' already exists."
 }
 
-git ls-remote --exit-code --heads origin $branchName 1>$null 2>$null
+$remoteBranch = git ls-remote --heads origin $branchName
+Stop-OnError "Unable to check remote branch '$branchName'."
 
-if ($LASTEXITCODE -eq 0) {
+if ($remoteBranch) {
     throw "Remote branch '$branchName' already exists."
 }
 
