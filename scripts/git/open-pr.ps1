@@ -74,9 +74,13 @@ if (-not $Title) {
 }
 
 # Ensure branch exists remotely
-$upstream = git rev-parse --abbrev-ref --symbolic-full-name "@{u}" 2>$null
+$upstream = git for-each-ref `
+    --format='%(upstream:short)' `
+    refs/heads/$branch
 
-if ($LASTEXITCODE -ne 0 -or -not $upstream) {
+Stop-OnError "Unable to determine branch upstream."
+
+if ([string]::IsNullOrWhiteSpace($upstream)) {
 
     Write-Host "Publishing branch before creating PR..."
 
@@ -92,9 +96,15 @@ else {
 Stop-OnError "Unable to push branch."
 
 # Avoid duplicate PRs
-$existingPr = gh pr view $branch --json url --jq '.url' 2>$null
+$existingPr = gh pr list `
+    --head $branch `
+    --state open `
+    --json url `
+    --jq '.[0].url'
 
-if ($LASTEXITCODE -eq 0 -and $existingPr) {
+Stop-OnError "Unable to check existing pull requests."
+
+if (-not [string]::IsNullOrWhiteSpace($existingPr)) {
     Write-Host ""
     Write-Host "A pull request already exists:"
     Write-Host $existingPr
