@@ -2,7 +2,7 @@ param(
     [Parameter(Mandatory = $true)]
     [string]$Message,
 
-    [Parameter(Mandatory = $false)]
+    [Parameter(Mandatory = $true)]
     [string]$Issue
 )
 
