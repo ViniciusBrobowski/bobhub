@@ -1,0 +1,5 @@
+proxmox_endpoint  = "https://pve.example.local:8006/"
+proxmox_api_token = "terraform@pve!provider=REPLACE_WITH_TOKEN"
+
+# Enable only when using a self-signed certificate in the lab.
+proxmox_insecure = true
