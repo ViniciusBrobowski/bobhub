@@ -48,3 +48,4 @@ PowerShell example:
 ```powershell
 $Env:TF_VAR_proxmox_endpoint = "https://pve.example.local:8006/"
 $Env:TF_VAR_proxmox_api_token = "terraform@pve!provider=TOKEN"
+```
