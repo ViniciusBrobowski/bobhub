@@ -3,3 +3,14 @@ proxmox_api_token = "terraform@pve!provider=REPLACE_WITH_TOKEN"
 
 # Enable only when using a self-signed certificate in the lab.
 proxmox_insecure = true
+
+# Virtual machine
+vm_name         = "lab-vm-01"
+vm_cpu_cores    = 2
+vm_memory_mb    = 2048
+vm_disk_size_gb = 20
+
+# Proxmox placement
+proxmox_node           = "pve-node-01"
+proxmox_storage        = "local-lvm"
+proxmox_network_bridge = "vmbr0"
