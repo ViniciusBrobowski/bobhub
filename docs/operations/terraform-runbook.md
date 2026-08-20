@@ -1008,7 +1008,7 @@ terraform apply <plan>
 ## Related Documentation
 
 ```text
-docs/architecture/promox-lab.md
+docs/architecture/proxmox-lab.md
 
 docs/planning/bobhub-v0.2-terraform-proxmox.md
 
