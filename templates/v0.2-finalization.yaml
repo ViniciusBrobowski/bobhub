@@ -1,0 +1,37 @@
+issues:
+  - title: "Finalize BobHub v0.2.0 Terraform + Proxmox release"
+    labels:
+      - documentation
+      - devops
+      - terraform
+      - proxmox
+    body: |
+      ## Objective
+
+      Formally close BobHub v0.2.0 after validating the Terraform + Proxmox Infrastructure as Code workflow.
+
+      The technical scope of v0.2.0 has been completed. This issue consolidates the documentation, project status and release artifacts before starting BobHub v0.3.0.
+
+      ## Tasks
+
+      - [ ] Update `README.md` with the current BobHub state
+      - [ ] Update `docs/planning/roadmap.md`
+      - [ ] Update `docs/planning/devops-drd-roadmap.md`
+      - [ ] Update `docs/planning/bobhub-v0.2-terraform-proxmox.md`
+      - [ ] Create `docs/checkpoints/terraform-proxmox-v0.2-checkpoint.md`
+      - [ ] Document nested virtualization limitations
+      - [ ] Update future roadmap to BobHub v0.3.0 Multi-Cloud
+      - [ ] Review repository for sensitive Terraform files
+      - [ ] Prepare BobHub v0.2.0 release notes
+      - [ ] Create tag `v0.2.0`
+      - [ ] Publish GitHub Release `v0.2.0`
+
+      ## Acceptance Criteria
+
+      - BobHub documentation reflects the real project status
+      - Terraform + Proxmox v0.2.0 checkpoint exists
+      - v0.2.0 is clearly marked as completed
+      - Future roadmap reflects the new multi-cloud v0.3.0 direction
+      - No sensitive Terraform data is committed
+      - Tag `v0.2.0` exists
+      - GitHub Release `v0.2.0` is published
