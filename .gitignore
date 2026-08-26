@@ -1,2 +1,13 @@
 docker/alertmanager/discord-webhook.url
 docs/inventory.md
+
+# Terraform
+**/.terraform/*
+*.tfstate
+*.tfstate.*
+*.tfvars
+!*.tfvars.example
+
+# Terraform crash logs
+crash.log
+crash.*.log
