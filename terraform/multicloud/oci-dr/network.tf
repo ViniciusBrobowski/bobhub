@@ -35,6 +35,23 @@ resource "oci_core_internet_gateway" "bobhub" {
   }
 }
 
+resource "oci_core_nat_gateway" "bobhub" {
+  compartment_id = var.compartment_ocid
+  vcn_id         = oci_core_vcn.bobhub.id
+
+  display_name  = "bobhub-v03-nat"
+  block_traffic = false
+
+  freeform_tags = {
+    Project     = "BobHub"
+    Version     = "v0.3.0"
+    Environment = "lab"
+    ManagedBy   = "Terraform"
+    Purpose     = "private-internet-egress"
+    CostClass   = "temporary"
+  }
+}
+
 resource "oci_core_route_table" "public" {
   compartment_id = var.compartment_ocid
   vcn_id         = oci_core_vcn.bobhub.id
@@ -70,6 +87,12 @@ resource "oci_core_route_table" "application" {
     ManagedBy   = "Terraform"
     Purpose     = "application-routing"
     CostClass   = "persistent"
+  }
+
+  route_rules {
+    destination       = "0.0.0.0/0"
+    destination_type  = "CIDR_BLOCK"
+    network_entity_id = oci_core_nat_gateway.bobhub.id
   }
 }
 

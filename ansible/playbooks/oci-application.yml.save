@@ -1,0 +1,112 @@
+
+
+
+---
+- name: Configure BobHub OCI application server
+  hosts: oci_app
+  become: true
+
+  tasks:
+    - name: Update APT cache
+      ansible.builtin.apt:
+        update_cache: true
+        cache_valid_time: 3600
+
+    - name: Install required packages
+      ansible.builtin.apt:
+        name:
+          - docker.io
+          - curl
+        state: present
+
+    - name: Ensure Docker service is enabled and running
+      ansible.builtin.service:
+        name: docker
+        state: started
+        enabled: true
+
+    - name: Add ubuntu user to Docker group
+      ansible.builtin.user:
+        name: ubuntu
+        groups: docker
+        append: true
+
+    - name: Create health endpoint
+      ansible.builtin.copy:
+      dest: /opt/bobhub-app/html/health
+      content: "healthy\n"
+      mode: "0644"
+
+    - name: Create whoami endpoint
+      ansible.builtin.copy:
+        dest: /opt/bobhub-app/html/whoami
+        content: |
+          cloud=oci
+          hostname={{ ansible_hostname }}
+          private_ip={{ ansible_default_ipv4.address }}
+          version=v0.3.0
+        mode: "0644"
+
+     - name: Create Nginx configuration
+      ansible.builtin.copy:
+        dest: /opt/bobhub-app/default.conf
+        mode: "0644"
+        content: |
+          server {
+            listen 80;
+            server_name _;
+
+            location = /health {
+              default_type text/plain;
+              alias /usr/share/nginx/html/health;
+            }
+
+            location = /whoami {
+              default_type text/plain;
+              alias /usr/share/nginx/html/whoami;
+            }
+
+            location / {
+              default_type text/plain;
+              return 200 "BobHub OCI Application\n";
+            }
+          }
+
+    - name: Create BobHub Docker network
+      community.docker.docker_network:
+        name: bobhub
+        state: present
+
+    - name: Run Traefik
+      community.docker.docker_container:
+        name: traefik
+        image: traefik:v3
+        state: started
+        restart_policy: unless-stopped
+        networks:
+          - name: bobhub
+        published_ports:
+          - "80:80"
+        volumes:
+          - /var/run/docker.sock:/var/run/docker.sock:ro
+        command:
+          - --providers.docker=true
+          - --providers.docker.exposedbydefault=false
+          - --entrypoints.web.address=:80
+
+    - name: Run BobHub application
+      community.docker.docker_container:
+        name: bobhub-app
+        image: nginx:alpine
+        state: started
+        restart_policy: unless-stopped
+        networks:
+          - name: bobhub
+        volumes:
+          - /opt/bobhub-app/html:/usr/share/nginx/html:ro
+          - /opt/bobhub-app/default.conf:/etc/nginx/conf.d/default.conf:ro
+        labels:
+          traefik.enable: "true"
+          traefik.http.routers.bobhub.rule: "PathPrefix(`/`)"
+          traefik.http.routers.bobhub.entrypoints: "web"
+          traefik.http.services.bobhub.loadbalancer.server.port: "80"
