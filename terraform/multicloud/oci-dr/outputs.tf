@@ -66,3 +66,8 @@ output "nat_gateway_id" {
   description = "OCID of the BobHub OCI NAT Gateway"
   value       = oci_core_nat_gateway.bobhub.id
 }
+
+output "nat_gateway_public_ip" {
+  description = "Public IP used by the OCI NAT Gateway for outbound traffic."
+  value       = oci_core_nat_gateway.bobhub.nat_ip
+}
