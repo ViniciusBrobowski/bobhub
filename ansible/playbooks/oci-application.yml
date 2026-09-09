@@ -15,6 +15,7 @@
           - docker.io
           - curl
           - python3-docker
+          - postgresql-client
         state: present
 
     - name: Ensure Docker service is enabled and running
@@ -31,50 +32,24 @@
 
     - name: Create BobHub application directory
       ansible.builtin.file:
-        path: /opt/bobhub-app/html
+        path: /opt/bobhub-app
         state: directory
         mode: "0755"
 
-    - name: Create health endpoint
+    - name: Copy BobHub application source
       ansible.builtin.copy:
-        dest: /opt/bobhub-app/html/health
-        content: "healthy\n"
+        src: "{{ playbook_dir }}/../files/bobhub-app/"
+        dest: /opt/bobhub-app/
         mode: "0644"
+        directory_mode: "0755"
 
-    - name: Create whoami endpoint
-      ansible.builtin.copy:
-        dest: /opt/bobhub-app/html/whoami
-        content: |
-          cloud=oci
-          hostname={{ ansible_hostname }}
-          private_ip={{ ansible_default_ipv4.address }}
-          version=v0.3.0
-        mode: "0644"
-
-    - name: Create Nginx configuration
-      ansible.builtin.copy:
-        dest: /opt/bobhub-app/default.conf
-        mode: "0644"
-        content: |
-          server {
-            listen 80;
-            server_name _;
-
-            location = /health {
-              default_type text/plain;
-              alias /usr/share/nginx/html/health;
-            }
-
-            location = /whoami {
-              default_type text/plain;
-              alias /usr/share/nginx/html/whoami;
-            }
-
-            location / {
-              default_type text/plain;
-              return 200 "BobHub OCI Application\n";
-            }
-          }
+    - name: Build BobHub application image 
+      community.docker.docker_image:
+        name: bobhub-app
+        tag: v0.3.0
+        source: build
+        build:
+          path: /opt/bobhub-app
 
     - name: Create BobHub Docker network
       community.docker.docker_network:
@@ -101,16 +76,28 @@
     - name: Run BobHub application
       community.docker.docker_container:
         name: bobhub-app
-        image: nginx:alpine
+        image: bobhub-app:v0.3.0
         state: started
         restart_policy: unless-stopped
+        recreate: true
+
         networks:
           - name: bobhub
-        volumes:
-          - /opt/bobhub-app/html:/usr/share/nginx/html:ro
-          - /opt/bobhub-app/default.conf:/etc/nginx/conf.d/default.conf:ro
+
+        env:
+          APP_CLOUD: "oci"
+          APP_HOSTNAME: "{{ ansible_hostname }}"
+          APP_PRIVATE_IP: "{{ ansible_default_ipv4.address }}"
+
+          DB_HOST: "{{ lookup('env', 'BOBHUB_DB_HOST') }}"
+          DB_NAME: "{{ lookup('env', 'BOBHUB_DB_NAME') }}"
+          DB_USER: "{{ lookup('env', 'BOBHUB_DB_USER') }}"
+          DB_PASSWORD: "{{ lookup('env', 'BOBHUB_DB_PASSWORD') }}"
+
         labels:
           traefik.enable: "true"
           traefik.http.routers.bobhub.rule: "PathPrefix(`/`)"
           traefik.http.routers.bobhub.entrypoints: "web"
-          traefik.http.services.bobhub.loadbalancer.server.port: "80"
+          traefik.http.services.bobhub.loadbalancer.server.port: "8000"
+
+      no_log: true
