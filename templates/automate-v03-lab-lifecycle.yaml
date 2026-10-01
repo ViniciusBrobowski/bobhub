@@ -1,0 +1,306 @@
+issues:
+  - title: "Automate BobHub v0.3 lab startup and shutdown lifecycle"
+    labels:
+      - devops
+      - automation
+    body: |
+      ## Objective
+
+      Automate the BobHub v0.3 study-session lifecycle so the multi-cloud environment can be started and stopped with minimal manual orchestration.
+
+      The goal is to reduce repetitive operational steps while preserving the current architecture, Terraform state isolation, Ansible responsibilities and secret handling.
+
+      ## Current Manual Workflow
+
+      Starting the BobHub v0.3 environment currently requires multiple manual steps:
+
+      ```text
+      Azure authentication
+            ↓
+      OCI Terraform apply
+            ↓
+      Retrieve OCI NAT public IP
+            ↓
+      Pass NAT IP to Azure Terraform
+            ↓
+      Azure Terraform apply
+            ↓
+      Create OCI Bastion session
+            ↓
+      Open SSH tunnel
+            ↓
+      Prepare runtime database variables
+            ↓
+      Run Ansible
+            ↓
+      Validate application endpoints
+      ```
+
+      Stopping the environment also requires manually destroying resources in the correct order.
+
+      ## Target Workflow
+
+      Expected startup experience:
+
+      ```powershell
+      .\scripts\cloud\start-v03-lab.ps1
+      ```
+
+      Conceptual flow:
+
+      ```text
+      Validate prerequisites
+            ↓
+      Validate Azure authentication
+            ↓
+      Load runtime secrets securely
+            ↓
+      Terraform apply OCI
+            ↓
+      Retrieve OCI NAT public IP
+            ↓
+      Pass NAT IP to Azure
+            ↓
+      Terraform apply Azure
+            ↓
+      Prepare OCI Bastion access
+            ↓
+      Open SSH tunnel
+            ↓
+      Run Ansible
+            ↓
+      Validate /health
+            ↓
+      Validate /whoami
+            ↓
+      Validate /db-health
+            ↓
+      Display environment summary
+      ```
+
+      Expected shutdown experience:
+
+      ```powershell
+      .\scripts\cloud\stop-v03-lab.ps1
+      ```
+
+      Conceptual flow:
+
+      ```text
+      Validate current environment
+            ↓
+      Destroy Azure data layer
+            ↓
+      Destroy OCI environment
+            ↓
+      Close temporary tunnel/processes
+            ↓
+      Clean runtime environment variables
+            ↓
+      Validate cleanup
+      ```
+
+      ## Planned Structure
+
+      Create:
+
+      ```text
+      scripts/
+      └── cloud/
+          ├── start-v03-lab.ps1
+          └── stop-v03-lab.ps1
+      ```
+
+      Additional helper files may be introduced if they improve maintainability without unnecessarily fragmenting the workflow.
+
+      ## Startup Responsibilities
+
+      The startup automation should progressively support:
+
+      - validate required local tools
+      - validate Azure CLI authentication
+      - configure required Terraform environment variables
+      - provision OCI infrastructure
+      - retrieve the OCI NAT public IP from Terraform output
+      - pass the NAT public IP to the Azure Terraform root
+      - provision Azure PostgreSQL infrastructure
+      - prepare OCI Bastion access
+      - establish the SSH tunnel required by Ansible
+      - provide database runtime configuration to Ansible without committing secrets
+      - execute the OCI application playbook
+      - validate application endpoints
+      - print a useful environment summary
+
+      Expected application validation:
+
+      ```text
+      /health
+      /whoami
+      /db-health
+      ```
+
+      ## Shutdown Responsibilities
+
+      The shutdown automation should:
+
+      - destroy Azure resources before OCI when required by cross-cloud variables
+      - destroy OCI resources
+      - stop temporary SSH tunnel processes created by the startup workflow
+      - remove temporary runtime variables where practical
+      - confirm that lab resources were removed
+      - preserve Terraform state and repository files
+
+      ## Secrets
+
+      Secrets must not be stored in:
+
+      ```text
+      Git
+      Terraform source
+      PowerShell source
+      Ansible playbooks
+      Documentation
+      ```
+
+      Sensitive values should only be exposed to the processes that require them during the active study session.
+
+      The implementation may evaluate an appropriate local secret storage mechanism such as:
+
+      ```text
+      PowerShell SecretStore
+      Windows Credential Manager
+      DPAPI-backed local storage
+      ```
+
+      The actual secret values must never be committed.
+
+      ## Terraform Responsibilities
+
+      Terraform remains responsible for cloud infrastructure.
+
+      ```text
+      OCI Terraform
+      → VCN
+      → networking
+      → Compute
+      → Load Balancer
+      → WAF
+      → Bastion
+
+      Azure Terraform
+      → Resource Group
+      → PostgreSQL
+      → database
+      → firewall rule
+      ```
+
+      The automation must not merge OCI and Azure Terraform states.
+
+      Existing state isolation must remain unchanged.
+
+      ## Ansible Responsibilities
+
+      Ansible remains responsible for application host configuration.
+
+      ```text
+      Ansible
+      → system packages
+      → Docker
+      → Traefik
+      → BobHub application
+      → database runtime configuration
+      ```
+
+      The startup script should orchestrate Ansible rather than duplicating its configuration responsibilities.
+
+      ## FinOps
+
+      The automation should make it easier to follow the BobHub FinOps strategy.
+
+      Desired behavior:
+
+      ```text
+      Start study session
+      → provision only required resources
+
+      Finish study session
+      → destroy paid/ephemeral resources
+      ```
+
+      The shutdown workflow should reduce the risk of leaving unnecessary cloud resources running after study sessions.
+
+      ## Implementation Strategy
+
+      Do not attempt to implement every step at once.
+
+      Recommended progression:
+
+      ```text
+      Phase 1
+      → prerequisites
+      → OCI Terraform apply
+      → NAT output
+      → Azure Terraform apply
+
+      Phase 2
+      → Bastion
+      → SSH tunnel
+      → Ansible
+
+      Phase 3
+      → endpoint validation
+      → environment summary
+
+      Phase 4
+      → shutdown automation
+      → cleanup validation
+      ```
+
+      All phases belong to this same functional delivery and should not be split into unnecessary micro-issues.
+
+      ## Acceptance Criteria
+
+      - `scripts/cloud/start-v03-lab.ps1` exists
+      - `scripts/cloud/stop-v03-lab.ps1` exists
+      - startup validates required local tools
+      - startup validates cloud authentication
+      - OCI infrastructure can be provisioned through the workflow
+      - OCI NAT public IP is passed automatically to Azure
+      - Azure infrastructure can be provisioned through the workflow
+      - Ansible configuration can be executed through the workflow
+      - database secrets are not committed
+      - `/health` can be validated automatically
+      - `/whoami` can be validated automatically
+      - `/db-health` can be validated automatically
+      - shutdown destroys Azure resources safely
+      - shutdown destroys OCI resources safely
+      - temporary session data is cleaned where practical
+      - Terraform state isolation remains unchanged
+      - final repository contains no sensitive data
+      - workflow is documented
+
+      ## Expected Result
+
+      Before:
+
+      ```text
+      Multiple manual commands
+      Multiple terminals
+      Manual variable passing
+      Manual startup ordering
+      Manual cleanup
+      ```
+
+      After:
+
+      ```text
+      start-v03-lab.ps1
+              ↓
+      BobHub v0.3 ready for study
+
+      stop-v03-lab.ps1
+              ↓
+      BobHub v0.3 lab cleaned up
+      ```
+
+      The automation should make the BobHub multi-cloud lab easier to operate repeatedly without hiding the underlying Terraform, Ansible and cloud architecture.
