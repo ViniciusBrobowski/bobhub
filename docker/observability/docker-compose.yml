@@ -9,9 +9,6 @@ services:
       GF_SERVER_ROOT_URL: "https://grafana.kernelcoffe.online"
       GF_SERVER_DOMAIN: "grafana.kernelcoffe.online"
 
-    ports:
-      - "3000:3000"
-
     volumes:
       - grafana-data:/var/lib/grafana
 
