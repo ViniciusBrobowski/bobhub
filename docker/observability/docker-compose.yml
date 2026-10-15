@@ -5,6 +5,10 @@ services:
     container_name: grafana
     restart: unless-stopped
 
+    environment:
+      - GF_SERVER_ROOT_URL: "https://grafana.kernelcoffe.online"
+      - GF_SERVER_DOMAIN: "grafana.kernelcoffe.online"
+
     ports:
       - "3000:3000"
 
