@@ -11,6 +11,10 @@ services:
     volumes:
       - grafana-data:/var/lib/grafana
 
+    networks:
+      - default
+      - bobhub-proxy
+
   prometheus:
     image: prom/prometheus:latest
     container_name: prometheus
@@ -23,6 +27,10 @@ services:
       - ../prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
       - ../prometheus/alert.rules.yml:/etc/prometheus/alert.rules.yml:ro
       - prometheus-data:/prometheus
+
+    networks:
+      - default
+      - bobhub-proxy
 
     depends_on:
       - node-exporter
@@ -40,6 +48,10 @@ services:
       - ../alertmanager/alertmanager.yml:/etc/alertmanager/alertmanager.yml:ro
       - ../alertmanager/discord-webhook.url:/etc/alertmanager/discord-webhook.url:ro
       - alertmanager-data:/alertmanager
+
+    networks:
+      - default
+      - bobhub-proxy
 
     healthcheck:
       test: ["CMD", "wget", "--spider", "--quiet", "http://localhost:9093/-/healthy"]
@@ -66,3 +78,7 @@ volumes:
   grafana-data:
   prometheus-data:
   alertmanager-data:
+
+networks:
+  bobhub-proxy:
+    external: true
