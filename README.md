@@ -537,6 +537,30 @@ Future versions may extend GitHub Actions into deployment and Infrastructure as 
 
 ---
 
+# BobHub Control Panel
+
+BobHub includes a local control panel for the v0.3 multi-cloud lab.
+
+It provides:
+
+- Start and stop orchestration for OCI + Azure.
+- Live status for Azure authentication, OCI resources, Terraform outputs, the SSH tunnel, application endpoints, and the WAF.
+- Real-time logs over Server-Sent Events.
+- Non-interactive execution of the PowerShell lifecycle scripts.
+- Credentials kept in memory only.
+
+The backend is a dependency-free Go binary with embedded HTML/CSS/JS.
+
+```powershell
+.\panel\start.ps1
+```
+
+Then open `http://127.0.0.1:8090`.
+
+See [panel/README.md](panel/README.md) for requirements, API, security notes, and troubleshooting.
+
+---
+
 # Repository Structure
 
 The repository is organized by infrastructure function.
@@ -568,6 +592,11 @@ bobhub/
 │
 ├── terraform/
 │   └── proxmox/
+│
+├── panel/
+│   ├── main.go
+│   ├── static/
+│   └── start.ps1
 │
 ├── wireguard/
 │
@@ -632,6 +661,7 @@ Current technologies used or practiced in BobHub include:
 - GitHub Actions
 - PowerShell
 - Bash
+- Go
 
 ---
 

@@ -11,3 +11,10 @@ docs/inventory.md
 # Terraform crash logs
 crash.log
 crash.*.log
+
+# BobHub control panel
+panel/bin/
+panel/*.exe
+
+# Local runtime state (SSH tunnel PID/log)
+.run/

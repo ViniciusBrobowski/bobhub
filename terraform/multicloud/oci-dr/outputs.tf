@@ -71,3 +71,8 @@ output "nat_gateway_public_ip" {
   description = "Public IP used by the OCI NAT Gateway for outbound traffic."
   value       = oci_core_nat_gateway.bobhub.nat_ip
 }
+
+output "load_balancer_public_ip" {
+  description = "Public IP address of the BobHub OCI Load Balancer."
+  value       = oci_load_balancer_load_balancer.bobhub.ip_address_details[0].ip_address
+}

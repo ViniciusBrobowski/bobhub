@@ -1,0 +1,316 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="bobhub-token" content="__BOBHUB_TOKEN__">
+  <title>BobHub · Visão geral</title>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <svg class="icon-sprite" aria-hidden="true" focusable="false">
+    <symbol id="i-grid" viewBox="0 0 16 16">
+      <rect x="2" y="2" width="5" height="5" rx="1"></rect>
+      <rect x="9" y="2" width="5" height="5" rx="1"></rect>
+      <rect x="2" y="9" width="5" height="5" rx="1"></rect>
+      <rect x="9" y="9" width="5" height="5" rx="1"></rect>
+    </symbol>
+    <symbol id="i-activity" viewBox="0 0 16 16">
+      <path d="M1.5 8.5h3l2-5 3 9 2-4h3"></path>
+    </symbol>
+    <symbol id="i-globe" viewBox="0 0 16 16">
+      <circle cx="8" cy="8" r="6"></circle>
+      <path d="M2 8h12M8 2c1.7 1.7 2.5 3.7 2.5 6S9.7 12.3 8 14c-1.7-1.7-2.5-3.7-2.5-6S6.3 3.7 8 2Z"></path>
+    </symbol>
+    <symbol id="i-lock" viewBox="0 0 16 16">
+      <rect x="3" y="7" width="10" height="7" rx="1.5"></rect>
+      <path d="M5.5 7V5a2.5 2.5 0 0 1 5 0v2"></path>
+    </symbol>
+    <symbol id="i-terminal" viewBox="0 0 16 16">
+      <rect x="1.5" y="2.5" width="13" height="11" rx="1.5"></rect>
+      <path d="m4.5 6 2 2-2 2M8.5 10.5h3"></path>
+    </symbol>
+    <symbol id="i-play" viewBox="0 0 16 16">
+      <path d="M5 3.2v9.6L12.5 8 5 3.2Z" fill="currentColor" stroke="none"></path>
+    </symbol>
+    <symbol id="i-stop" viewBox="0 0 16 16">
+      <rect x="4" y="4" width="8" height="8" rx="1" fill="currentColor" stroke="none"></rect>
+    </symbol>
+    <symbol id="i-refresh" viewBox="0 0 16 16">
+      <path d="M13.5 8a5.5 5.5 0 1 1-1.7-4"></path>
+      <path d="M13.5 2.5V6H10"></path>
+    </symbol>
+    <symbol id="i-chevron" viewBox="0 0 16 16">
+      <path d="m4.5 6.5 3.5 3.5 3.5-3.5"></path>
+    </symbol>
+  </svg>
+
+  <div class="shell">
+    <aside class="sidebar">
+      <a class="wordmark" href="#overview" aria-label="BobHub Lab">
+        <svg class="wordmark-logo" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M7 18.5a4.25 4.25 0 0 1-.8-8.42 5.75 5.75 0 0 1 10.9-1.2A4.25 4.25 0 0 1 18 18.5H7Z" fill="currentColor"></path>
+        </svg>
+        <span class="wordmark-text">BobHub</span>
+        <span class="wordmark-tag">lab</span>
+      </a>
+
+      <div class="account">
+        <span class="account-avatar" aria-hidden="true">BH</span>
+        <span class="account-text">
+          <strong>BobHub Lab</strong>
+          <small>v0.3 · OCI + Azure</small>
+        </span>
+        <svg class="icon account-chevron" aria-hidden="true"><use href="#i-chevron"></use></svg>
+      </div>
+
+      <nav class="nav" aria-label="Seções do painel">
+        <p class="nav-label">Monitoramento</p>
+        <a class="nav-item is-active" href="#overview" data-section="overview">
+          <svg class="icon" aria-hidden="true"><use href="#i-grid"></use></svg>
+          Visão geral
+        </a>
+        <a class="nav-item" href="#status" data-section="status">
+          <svg class="icon" aria-hidden="true"><use href="#i-activity"></use></svg>
+          Status dos recursos
+        </a>
+        <a class="nav-item" href="#application" data-section="application">
+          <svg class="icon" aria-hidden="true"><use href="#i-globe"></use></svg>
+          Aplicação
+        </a>
+
+        <p class="nav-label">Operação</p>
+        <a class="nav-item" href="#credentials" data-section="credentials">
+          <svg class="icon" aria-hidden="true"><use href="#i-lock"></use></svg>
+          Credenciais
+        </a>
+        <a class="nav-item" href="#console" data-section="console">
+          <svg class="icon" aria-hidden="true"><use href="#i-terminal"></use></svg>
+          Console
+        </a>
+      </nav>
+
+      <div class="sidebar-foot">
+        <span class="foot-dot" aria-hidden="true"></span>
+        <span>Painel local · 127.0.0.1:8090</span>
+      </div>
+    </aside>
+
+    <div class="main">
+      <header class="topbar">
+        <div class="breadcrumb">
+          <span>BobHub</span>
+          <span class="sep" aria-hidden="true">/</span>
+          <span>Lab v0.3</span>
+          <span class="sep" aria-hidden="true">/</span>
+          <strong>Visão geral</strong>
+        </div>
+
+        <div class="topbar-actions">
+          <span id="clock" class="clock">--:--:--</span>
+          <span id="conn-badge" class="badge offline">conectando…</span>
+          <button id="btn-refresh" class="btn btn-secondary btn-sm" type="button">
+            <svg class="icon" aria-hidden="true"><use href="#i-refresh"></use></svg>
+            Atualizar
+          </button>
+        </div>
+      </header>
+
+      <main class="content">
+        <div class="page-head">
+          <div class="page-heading">
+            <div class="page-kicker">
+              <span class="tag">v0.3</span>
+              <span>Laboratório multi-cloud</span>
+            </div>
+            <h1>Visão geral</h1>
+            <p class="page-desc">Ciclo de vida do ambiente OCI com banco de dados Azure PostgreSQL.</p>
+          </div>
+
+          <div class="page-actions">
+            <button id="btn-start" class="btn btn-primary" type="button">
+              <svg class="icon" aria-hidden="true"><use href="#i-play"></use></svg>
+              Iniciar ambiente
+            </button>
+            <button id="btn-stop" class="btn btn-danger" type="button">
+              <svg class="icon" aria-hidden="true"><use href="#i-stop"></use></svg>
+              Parar ambiente
+            </button>
+            <button id="btn-cancel" class="btn btn-secondary hidden" type="button">
+              Cancelar execução
+            </button>
+          </div>
+        </div>
+
+        <div id="run-banner" class="run-banner hidden" role="status" aria-live="polite">
+          <span class="spinner" aria-hidden="true"></span>
+          <span id="run-label">Executando…</span>
+          <span id="run-elapsed" class="elapsed">00:00</span>
+        </div>
+
+        <section id="overview" class="card env-card" aria-labelledby="env-title">
+          <div class="env-main">
+            <p class="card-label">Estado do ambiente</p>
+            <div class="env-title-row">
+              <span id="env-dot" class="env-state-dot" aria-hidden="true"></span>
+              <h2 id="env-title">Carregando…</h2>
+            </div>
+            <p id="env-subtitle" class="env-meta">Consultando o estado do laboratório.</p>
+          </div>
+
+          <dl class="env-facts">
+            <div>
+              <dt>Provedores</dt>
+              <dd>OCI · Azure</dd>
+            </div>
+            <div>
+              <dt>Modo</dt>
+              <dd>Execução local</dd>
+            </div>
+            <div>
+              <dt>Segredos</dt>
+              <dd>Somente em memória</dd>
+            </div>
+          </dl>
+        </section>
+
+        <section id="status" class="section" aria-labelledby="status-title">
+          <div class="section-head">
+            <div>
+              <h2 id="status-title">Status dos recursos</h2>
+              <p>Leitura do Terraform, da CLI Azure e dos endpoints públicos.</p>
+            </div>
+            <button id="btn-status-refresh" class="btn btn-secondary btn-sm" type="button">
+              <svg class="icon" aria-hidden="true"><use href="#i-refresh"></use></svg>
+              Atualizar status
+            </button>
+          </div>
+
+          <div id="status-grid" class="status-grid">
+            <div class="skeleton"></div>
+            <div class="skeleton"></div>
+            <div class="skeleton"></div>
+            <div class="skeleton"></div>
+            <div class="skeleton"></div>
+            <div class="skeleton"></div>
+          </div>
+        </section>
+
+        <div class="split">
+          <section id="application" class="card stack-card" aria-labelledby="application-title">
+            <header class="card-head">
+              <div>
+                <h2 id="application-title">Aplicação</h2>
+                <span class="sub">Endpoints públicos via Load Balancer</span>
+              </div>
+            </header>
+
+            <div class="card-body">
+              <p id="app-hint" class="muted-sm">Aguardando dados do ambiente.</p>
+              <div id="app-links" class="app-links"></div>
+            </div>
+          </section>
+
+          <section id="credentials" class="card stack-card" aria-labelledby="credentials-title">
+            <header class="card-head">
+              <div>
+                <h2 id="credentials-title">Credenciais</h2>
+                <span class="sub">Mantidas apenas na memória local</span>
+              </div>
+            </header>
+
+            <div class="card-body">
+              <p class="muted-sm">
+                As senhas são enviadas por variáveis de ambiente somente no momento da
+                execução. O painel não grava nada em disco.
+              </p>
+
+              <div id="secrets-note" class="secrets-note hidden" role="status">
+                <svg class="icon" aria-hidden="true"><use href="#i-lock"></use></svg>
+                <span id="secrets-note-text"></span>
+              </div>
+
+              <form id="credentials-form" class="credentials-form" autocomplete="off">
+                <label for="admin-user">
+                  Usuário admin PostgreSQL
+                  <input id="admin-user" name="admin-user" type="text" placeholder="bobhubadmin" autocomplete="username" spellcheck="false">
+                </label>
+
+                <label for="admin-password">
+                  Senha admin PostgreSQL
+                  <span class="field">
+                    <input id="admin-password" name="admin-password" type="password" autocomplete="current-password">
+                    <button class="eye" type="button" data-target="admin-password" aria-label="Mostrar senha">mostrar</button>
+                  </span>
+                </label>
+
+                <label for="app-password">
+                  Senha do app <code>bobhub_app</code>
+                  <span class="field">
+                    <input id="app-password" name="app-password" type="password" autocomplete="new-password">
+                    <button class="eye" type="button" data-target="app-password" aria-label="Mostrar senha">mostrar</button>
+                  </span>
+                </label>
+
+                <div class="form-actions">
+                  <button id="btn-az-login" class="btn btn-secondary btn-sm" type="button">
+                    Abrir <code>az login</code>
+                  </button>
+                  <span class="muted-sm">Use se a assinatura Azure não estiver autenticada.</span>
+                </div>
+              </form>
+            </div>
+          </section>
+        </div>
+
+        <section id="console" class="card console-card" aria-labelledby="console-title">
+          <header class="card-head">
+            <div class="console-title">
+              <h2 id="console-title">Console</h2>
+              <span id="log-count" class="muted-sm">0 linhas</span>
+            </div>
+            <div class="console-actions">
+              <label class="check">
+                <input id="autoscroll" type="checkbox" checked> Rolagem automática
+              </label>
+              <button id="btn-clear-log" class="btn btn-secondary btn-sm" type="button">Limpar</button>
+            </div>
+          </header>
+
+          <div id="log" class="log" role="log" aria-live="polite"></div>
+        </section>
+
+        <footer class="page-foot">
+          <span>Repositório: <span id="repo-path" class="mono">—</span></span>
+          <span>Painel local · OCI + Azure · credenciais apenas em memória</span>
+        </footer>
+      </main>
+    </div>
+  </div>
+
+  <dialog id="confirm-dialog">
+    <form method="dialog" class="dialog-card">
+      <div class="dialog-icon" aria-hidden="true">!</div>
+      <h2>Parar o ambiente?</h2>
+      <p>
+        Esta ação executa <code>terraform destroy</code> no <strong>Azure PostgreSQL</strong>
+        e na infraestrutura <strong>OCI</strong>. A aplicação e o WAF ficarão indisponíveis.
+      </p>
+      <ul>
+        <li>O túnel SSH local na porta 2222 será encerrado.</li>
+        <li>O Load Balancer e o WAF do OCI serão removidos.</li>
+        <li>O banco de dados Azure será destruído.</li>
+      </ul>
+      <div class="dialog-actions">
+        <button class="btn btn-secondary" type="submit" value="cancel">Cancelar</button>
+        <button class="btn btn-danger-solid" type="submit" value="confirm">Sim, parar ambiente</button>
+      </div>
+    </form>
+  </dialog>
+
+  <div id="toasts" class="toasts" aria-live="polite"></div>
+
+  <script src="/app.js" defer></script>
+</body>
+</html>

@@ -3,6 +3,27 @@
   hosts: oci_app
   become: true
 
+  vars:
+    bobhub_db_host: "{{ lookup('env', 'BOBHUB_DB_HOST') }}"
+    bobhub_db_name: "{{ lookup('env', 'BOBHUB_DB_NAME') }}"
+    bobhub_db_user: "{{ lookup('env', 'BOBHUB_DB_USER') }}"
+    bobhub_db_password: "{{ lookup('env', 'BOBHUB_DB_PASSWORD') }}"
+    bobhub_db_admin_user: "{{ lookup('env', 'BOBHUB_DB_ADMIN_USER') }}"
+    bobhub_db_admin_password: "{{ lookup('env', 'BOBHUB_DB_ADMIN_PASSWORD') }}"
+
+  pre_tasks:
+    - name: Validate BobHub database runtime variables
+      ansible.builtin.assert:
+        that:
+          - bobhub_db_host | length > 0
+          - bobhub_db_name | length > 0
+          - bobhub_db_user | length > 0
+          - bobhub_db_password | length > 0
+          - bobhub_db_admin_user | length > 0
+          - bobhub_db_admin_password | length > 0
+        fail_msg: "Required BobHub database runtime variables are missing."
+      no_log: true
+
   tasks:
     - name: Update APT cache
       ansible.builtin.apt:
@@ -30,6 +51,70 @@
         groups: docker
         append: true
 
+    - name: Bootstrap BobHub PostgreSQL application role
+      ansible.builtin.shell: |
+        set -euo pipefail
+
+        psql_admin() {
+          PGPASSWORD="$BOBHUB_DB_ADMIN_PASSWORD" \
+          PGSSLMODE=require \
+          psql \
+            --host="$BOBHUB_DB_HOST" \
+            --username="$BOBHUB_DB_ADMIN_USER" \
+            --dbname="$BOBHUB_DB_NAME" \
+            --set=ON_ERROR_STOP=1 \
+            "$@"
+        }
+
+        ROLE_EXISTS="$(psql_admin --tuples-only --no-align --command \
+          "SELECT 1 FROM pg_roles WHERE rolname = 'bobhub_app';")"
+
+        if [ "$ROLE_EXISTS" != "1" ]; then
+          printf '%s\n' \
+            "SELECT format('CREATE ROLE bobhub_app LOGIN PASSWORD %L', :'app_password') \gexec" |
+            psql_admin --set=app_password="$BOBHUB_DB_PASSWORD"
+        else
+          printf '%s\n' \
+            "SELECT format('ALTER ROLE bobhub_app WITH LOGIN PASSWORD %L', :'app_password') \gexec" |
+            psql_admin --set=app_password="$BOBHUB_DB_PASSWORD"
+        fi
+
+        # psql does not expand :"var" in --command; feed the statement via stdin.
+        psql_admin \
+          --set=db_name="$BOBHUB_DB_NAME" \
+          <<< 'GRANT CONNECT ON DATABASE :"db_name" TO bobhub_app;'
+
+        psql_admin \
+          --command "GRANT USAGE ON SCHEMA public TO bobhub_app;"
+      args:
+        executable: /bin/bash
+      environment:
+        BOBHUB_DB_HOST: "{{ bobhub_db_host }}"
+        BOBHUB_DB_NAME: "{{ bobhub_db_name }}"
+        BOBHUB_DB_ADMIN_USER: "{{ bobhub_db_admin_user }}"
+        BOBHUB_DB_ADMIN_PASSWORD: "{{ bobhub_db_admin_password }}"
+        BOBHUB_DB_PASSWORD: "{{ bobhub_db_password }}"
+      changed_when: false
+      no_log: true
+
+    - name: Validate BobHub application database login
+      ansible.builtin.command:
+        argv:
+          - psql
+          - "--host={{ bobhub_db_host }}"
+          - "--username={{ bobhub_db_user }}"
+          - "--dbname={{ bobhub_db_name }}"
+          - "--tuples-only"
+          - "--no-align"
+          - "--command=SELECT 1;"
+      environment:
+        PGPASSWORD: "{{ bobhub_db_password }}"
+        PGSSLMODE: require
+      register: bobhub_db_login_test
+      changed_when: false
+      failed_when: bobhub_db_login_test.rc != 0 or bobhub_db_login_test.stdout | trim != "1"
+      no_log: true
+
     - name: Create BobHub application directory
       ansible.builtin.file:
         path: /opt/bobhub-app
@@ -43,7 +128,7 @@
         mode: "0644"
         directory_mode: "0755"
 
-    - name: Build BobHub application image 
+    - name: Build BobHub application image
       community.docker.docker_image:
         name: bobhub-app
         tag: v0.3.0
@@ -80,24 +165,19 @@
         state: started
         restart_policy: unless-stopped
         recreate: true
-
         networks:
           - name: bobhub
-
         env:
           APP_CLOUD: "oci"
           APP_HOSTNAME: "{{ ansible_hostname }}"
           APP_PRIVATE_IP: "{{ ansible_default_ipv4.address }}"
-
-          DB_HOST: "{{ lookup('env', 'BOBHUB_DB_HOST') }}"
-          DB_NAME: "{{ lookup('env', 'BOBHUB_DB_NAME') }}"
-          DB_USER: "{{ lookup('env', 'BOBHUB_DB_USER') }}"
-          DB_PASSWORD: "{{ lookup('env', 'BOBHUB_DB_PASSWORD') }}"
-
+          DB_HOST: "{{ bobhub_db_host }}"
+          DB_NAME: "{{ bobhub_db_name }}"
+          DB_USER: "{{ bobhub_db_user }}"
+          DB_PASSWORD: "{{ bobhub_db_password }}"
         labels:
           traefik.enable: "true"
           traefik.http.routers.bobhub.rule: "PathPrefix(`/`)"
           traefik.http.routers.bobhub.entrypoints: "web"
           traefik.http.services.bobhub.loadbalancer.server.port: "8000"
-
       no_log: true
