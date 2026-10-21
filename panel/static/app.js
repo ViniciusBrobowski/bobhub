@@ -490,7 +490,14 @@ function setActionsBusy(busy) {
 // Console
 // --------------------------------------------------------------------------
 
+const LOG_BOTTOM_THRESHOLD = 24;
+
+function isLogAtBottom() {
+  return els.log.scrollHeight - els.log.scrollTop - els.log.clientHeight <= LOG_BOTTOM_THRESHOLD;
+}
+
 function appendLog(entry) {
+  const wasAtBottom = isLogAtBottom();
   const line = document.createElement("div");
   line.className = `log-line ${classify(entry.line || "")}`.trim();
 
@@ -511,7 +518,7 @@ function appendLog(entry) {
 
   updateLogCount();
 
-  if (els.autoscroll.checked) {
+  if (wasAtBottom || els.autoscroll.checked) {
     els.log.scrollTop = els.log.scrollHeight;
   }
 }
@@ -683,6 +690,12 @@ async function refreshStatus() {
 els.refresh.addEventListener("click", refreshStatus);
 els.statusRefresh.addEventListener("click", refreshStatus);
 els.clearLog.addEventListener("click", clearLogs);
+
+els.log.addEventListener("scroll", () => {
+  if (els.autoscroll.checked && !isLogAtBottom()) {
+    els.autoscroll.checked = false;
+  }
+}, { passive: true });
 
 document.querySelectorAll(".eye").forEach((button) => {
   button.addEventListener("click", () => {
