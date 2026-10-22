@@ -394,9 +394,19 @@ The Ansible implementation is located under:
 ```text
 ansible/
 ├── inventory/
-│   └── oci.ini
+│   ├── oci.ini          # generated at runtime, ignored by Git
+│   └── oci.ini.example  # versioned template
 └── playbooks/
     └── oci-application.yml
+```
+
+The real inventory is generated at runtime by
+`scripts/cloud/start-v03-lab.sh` and `scripts/cloud/start-v03-lab.ps1` and is
+not versioned. `ansible/inventory/oci.ini.example` is the versioned template;
+to run Ansible manually, copy it:
+
+```bash
+cp ansible/inventory/oci.ini.example ansible/inventory/oci.ini
 ```
 
 The inventory uses the local Bastion tunnel.

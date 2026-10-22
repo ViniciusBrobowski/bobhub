@@ -1,0 +1,14 @@
+# Inventário de exemplo para o playbook do OCI.
+#
+# O arquivo real `oci.ini` é gerado em tempo de execução por
+# `scripts/cloud/start-v03-lab.sh` ou `scripts/cloud/start-v03-lab.ps1`
+# e é ignorado pelo Git.
+#
+# Para executar o Ansible manualmente, copie este arquivo:
+#   cp ansible/inventory/oci.ini.example ansible/inventory/oci.ini
+#
+# O host `127.0.0.1:2222` é o túnel SSH canônico do fluxo Bash. O script
+# PowerShell substitui o host pelo IP do host Windows visível no WSL.
+
+[oci_app]
+bobhub-oci ansible_host=127.0.0.1 ansible_port=2222 ansible_user=ubuntu ansible_ssh_private_key_file=~/.ssh/bobhub-oci ansible_ssh_common_args='-o StrictHostKeyChecking=accept-new'

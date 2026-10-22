@@ -40,7 +40,7 @@ resource "oci_core_instance" "application" {
   }
 
   metadata = {
-    ssh_authorized_keys = file(var.ssh_public_key_path)
+    ssh_authorized_keys = trimspace(file(var.ssh_public_key_path))
   }
 
   freeform_tags = {
