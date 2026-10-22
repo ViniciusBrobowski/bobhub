@@ -557,7 +557,14 @@ The backend is a dependency-free Go binary with embedded HTML/CSS/JS.
 
 Then open `http://127.0.0.1:8090`.
 
-See [panel/README.md](panel/README.md) for requirements, API, security notes, and troubleshooting.
+On the VPS, the panel is also available at `https://ambiente.kernelcoffe.online`
+behind Cloudflare Access. The internal port remains closed to the public
+internet.
+
+See [panel/README.md](panel/README.md) for requirements, API, security notes, and
+troubleshooting. See
+[docs/operations/panel-access.md](docs/operations/panel-access.md) for the
+Cloudflare, Traefik, systemd, UFW, and validation details.
 
 ---
 

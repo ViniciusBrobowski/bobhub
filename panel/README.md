@@ -147,14 +147,20 @@ Description=BobHub Control Panel
 After=network-online.target
 
 [Service]
-EnvironmentFile=/etc/bobhub/panel.env
-ExecStart=/opt/bobhub/panel/bin/bobhub-panel --host 127.0.0.1 --port 8090 --no-browser
+EnvironmentFile=-/etc/bobhub/panel.env
+ExecStart=/opt/bobhub/panel/bobhub-panel --host 0.0.0.0 --port 8090 --no-browser --repo /opt/bobhub/bobhub
 Restart=on-failure
-User=bobhub
+User=vinicius
+Group=vinicius
 
 [Install]
 WantedBy=multi-user.target
 ```
+
+> No deployment da VPS, o painel roda com `--host 0.0.0.0` e a UFW restringe a
+> porta `8090` à rede Docker `bobhub-proxy`. O acesso público é somente por
+> `https://ambiente.kernelcoffe.online`, atrás do Cloudflare Access. Veja
+> [docs/operations/panel-access.md](../docs/operations/panel-access.md).
 
 > **Limitação atual:** o binário Go é portátil, mas os scripts de ciclo de vida
 > usam PowerShell, WSL e `Get-NetTCPConnection`. Enquanto eles não forem portados
@@ -293,6 +299,8 @@ estiver presente no processo do painel. O status expõe apenas booleanos em
 ## Segurança
 
 - O servidor escuta apenas em `127.0.0.1` por padrão.
+- No deployment da VPS, o bind é `0.0.0.0`, mas a UFW libera a porta `8090`
+  apenas para `172.23.0.0/16`; o acesso público passa pelo Cloudflare Access.
 - O middleware valida o cabeçalho `Host` para evitar DNS rebinding quando o bind é local.
 - Um token aleatório de 256 bits é gerado a cada execução e exigido nas rotas sensíveis.
 - CSP restritiva, sem CORS e sem recursos externos.
@@ -302,8 +310,12 @@ estiver presente no processo do painel. O status expõe apenas booleanos em
 - As senhas são removidas dos logs antes de serem transmitidas (`********`).
 - `POST` é usado para todas as ações que alteram o ambiente.
 
-> O painel executa comandos destrutivos por design. Não o exponha em redes públicas.
-> Se precisar acessar de outra máquina, use um túnel SSH e mantenha o token em segredo.
+> O painel executa comandos destrutivos por design. Não o exponha diretamente em
+> redes públicas. No deployment da VPS, o único acesso público é
+> `https://ambiente.kernelcoffe.online`, atrás do Cloudflare Access, e a porta
+> `8090` permanece bloqueada na UFW. Para acesso local, use o túnel SSH e mantenha
+> o token em segredo. Detalhes em
+> [docs/operations/panel-access.md](../docs/operations/panel-access.md).
 
 ---
 

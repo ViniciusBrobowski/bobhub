@@ -144,8 +144,11 @@ credenciais.
 - O Vault está publicado apenas em `127.0.0.1:8200` no host, mas ainda está na
   rede Docker `bobhub-proxy`. Recomenda-se removê-lo dessa rede para que apenas
   o host acesse a API.
-- O painel escuta em `127.0.0.1:8090`; o acesso externo deve ser por túnel SSH
-  (`ssh -L 8090:127.0.0.1:8090 vinicius@189.126.106.82`) ou por Cloudflare
-  Access/Traefik com autenticação.
+- O painel escuta em `0.0.0.0:8090` na VPS, mas a UFW libera a porta `8090`
+  apenas para `172.23.0.0/16`; o acesso público é somente por
+  `https://ambiente.kernelcoffe.online`, atrás do Cloudflare Access. O loopback
+  `127.0.0.1:8090` continua disponível para o túnel SSH
+  (`ssh -L 8090:127.0.0.1:8090 vinicius@189.126.106.82`). Veja
+  [docs/operations/panel-access.md](../../docs/operations/panel-access.md).
 - Nunca commitar `terraform.tfstate`, `terraform.tfvars`, chaves PEM ou o
   `ansible/inventory/oci.ini`.
