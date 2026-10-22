@@ -151,4 +151,5 @@ credenciais.
   (`ssh -L 8090:127.0.0.1:8090 vinicius@189.126.106.82`). Veja
   [docs/operations/panel-access.md](../../docs/operations/panel-access.md).
 - Nunca commitar `terraform.tfstate`, `terraform.tfvars`, chaves PEM ou o
-  `ansible/inventory/oci.ini`.
+  `ansible/inventory/oci.ini` (gerado em runtime e ignorado pelo Git; use o
+  template `ansible/inventory/oci.ini.example`).
